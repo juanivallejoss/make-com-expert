@@ -31,7 +31,7 @@ description: >
 | Logical OR | `or` | `\|\|` |
 | Array index | Starts at **1** | Starts at 0 |
 | Null check | `ifempty(val; fallback)` | `val ?? fallback` |
-| Object access | `get(obj; path)` or dot notation in mappings | `obj.path` or `obj['path']` |
+| Object access | `get(obj; "path")` or dot notation in mappings | `obj.path` or `obj['path']` |
 | Regex in replace | `/pattern/flags` (no named groups) | Full regex support |
 | Switch statement | `switch(expr; v1; r1; v2; r2; else)` | `switch(expr) { case... }` |
 | String methods | `lower(text)`, `upper(text)` | `text.toLowerCase()` |
@@ -107,9 +107,9 @@ Array operations: `add`, `contains`, `deduplicate`, `distinct`, `first`, `flatte
 
 ### Extract from nested JSON
 ```
-{{get(1.data; "results.0.address.city")}}
+{{get(1.data; "results.1.address.city")}}
 ```
-Note: Inside `get()`, array indices start at 0 in the path string, but standalone array references use index 1.
+Note: Array indices inside `get()` paths start at **1**, same as dot notation.
 
 ### Format phone number
 ```

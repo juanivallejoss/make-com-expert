@@ -86,8 +86,84 @@ Once installed, just ask Claude anything about Make.com formulas. The skill acti
 
 - *"Write a Make.com formula that formats a phone number"*
 - *"How do I calculate the number of days between two dates in Make?"*
-- *"Debug this Make.com expression: `if(1.status === "active", "yes", "no")`"*
+- *"Debug this Make.com expression: `if(1.status;"active"; "yes"; "no")`"*
 - *"Convert this JavaScript to a Make.com formula"*
+
+### `get` — Access nested data
+
+`get` extracts values from objects and arrays using dot-notation paths. Arrays start at **1**.
+
+```
+{{get(1.data; "user.name")}}
+```
+Access a nested property — equivalent to `1.data.user.name`.
+
+```
+{{get(1.results; "1.address.city")}}
+```
+Get the first array element's nested property.
+
+```
+{{get(1.body; "items.3.price")}}
+```
+Get the price of the third item in an array.
+
+```
+{{ifempty(get(1.payload; "meta.tags"); "no tags")}}
+```
+Combine with `ifempty` to provide a fallback when the path doesn't exist.
+
+```
+{{get(1.webhookData; "contact.addresses.1.zip")}}
+```
+Drill into deeply nested webhook payloads.
+
+### `map` — Extract & filter arrays
+
+`map` pulls a single field out of every object in an array, returning a flat list. It can also filter.
+
+**Basic extraction** — get all email addresses from a contacts array:
+```
+{{map(1.contacts[]; "email")}}
+```
+Returns `["alice@example.com", "bob@example.com", ...]`
+
+**With `join`** — build a comma-separated string:
+```
+{{join(map(1.contacts[]; "name"); ", ")}}
+```
+Returns `"Alice, Bob, Charlie"`
+
+**Filtered extraction** — get only work emails:
+```
+{{map(1.contacts[]; "email"; "type"; "work")}}
+```
+Returns emails where `type` equals `"work"`.
+
+**Filter with multiple allowed values** — get work and home emails:
+```
+{{map(1.contacts[]; "email"; "type"; "work,home")}}
+```
+
+**Nested key** — extract a nested field from each item:
+```
+{{map(1.orders[]; "shipping.city")}}
+```
+
+**Count filtered results** — how many active users:
+```
+{{length(map(1.users[]; "id"; "status"; "active"))}}
+```
+
+**Combined with other functions** — deduplicate extracted values:
+```
+{{deduplicate(map(1.records[]; "category"))}}
+```
+
+**Sum a numeric field** — total all line item amounts:
+```
+{{sum(map(1.lineItems[]; "amount"))}}
+```
 
 ## Why this skill exists
 
